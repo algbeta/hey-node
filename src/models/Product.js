@@ -1,7 +1,5 @@
-export default class Product {
+export class Product {
   constructor() {
-    super()
-
-    console.log('Product module')
+    console.log('Product module');
   }
 }
