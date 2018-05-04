@@ -1,7 +1,9 @@
 {
   "extends": "airbnb-base/legacy",
+  "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 8
   },
   "env": {
     "node": true,
