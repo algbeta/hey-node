@@ -5,6 +5,7 @@ import * as csvjson from 'csvjson';
 import * as config from '../config';
 
 class Importer {
+  // I could have used sync import to promisify and wanted to try async readFile
   importAsync(pathToFile, callback) {
     fs.readFile(path.join(__dirname, pathToFile), config.encoding, (err, data) => {
       if (err) {
@@ -34,6 +35,7 @@ class Importer {
   }
 }
 
+// simple promise return seems to be clearer but I'd like to try promisify
 Importer.prototype.import = promisify(Importer.prototype.importAsync);
 
 export default Importer;
