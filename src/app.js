@@ -1,9 +1,11 @@
 import * as config from './config';
-import { User, Product } from './models';
 import Importer from './dirwatch/importer';
+import DirWatcher from './dirwatch/dirwatcher'
 
-console.log(config.name);
-
-const user = new User();
-const product = new Product();
+const dirwatcher = new DirWatcher();
 const importer = new Importer();
+
+dirwatcher.on(config.changeEvent, () => {
+  console.log('change event caught')
+});
+dirwatcher.init('../../data')
