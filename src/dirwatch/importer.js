@@ -1,13 +1,13 @@
-import * as path from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import * as csvjson from 'csvjson';
 import * as config from '../config';
 
+// joined pathes should be provided 
 class Importer {
   // I could have used sync import to promisify and wanted to try async readFile
-  importAsync(pathToFile, callback) {
-    fs.readFile(path.join(__dirname, pathToFile), config.encoding, (err, data) => {
+  static importAsync(pathToFile, callback) {
+    fs.readFile(pathToFile, config.encoding, (err, data) => {
       if (err) {
         callback(err);
       } else {
@@ -23,19 +23,19 @@ class Importer {
     });
   }
 
-  importSync(pathToFile) {
+  static importSync(pathToFile) {
     try {
-      const data = fs.readFileSync(path.join(__dirname, pathToFile), { encoding: config.encoding });
+      const data = fs.readFileSync(pathToFile, { encoding: config.encoding });
       return csvjson.toObject(data, {
         delimiter: config.delimiter
       });
     } catch (err) {
-      console.log(err.message);
+      console.log(`[ERROR]: ${err.message}`);
     }
   }
 }
 
 // simple promise return seems to be clearer but I'd like to try promisify
-Importer.prototype.import = promisify(Importer.prototype.importAsync);
+Importer.import = promisify(Importer.importAsync);
 
 export default Importer;

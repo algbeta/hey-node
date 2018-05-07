@@ -1,11 +1,14 @@
+/* eslint no-plusplus: "off" */
+
 import * as path from 'path';
 import * as fs from 'fs';
 
 export default function walk(folderPath, callback, done) {
   fs.readdir(folderPath, (err, list = []) => {
     let i = 0;
+    // store files are found through walk to find if any of them were deleted
     let files = [];
-   
+
     (function next() {
       const filename = list[i++];
       if (!filename) return done(null, files);
@@ -15,8 +18,8 @@ export default function walk(folderPath, callback, done) {
         if (statErr) return done(statErr);
 
         if (data && data.isDirectory()) {
-          walk(filePath, callback, (err, newFiles) => {
-            if (err) return done(err);
+          walk(filePath, callback, (walkErr, newFiles) => {
+            if (walkErr) return done(walkErr);
             files = files.concat(newFiles);
             next();
           });
@@ -25,7 +28,7 @@ export default function walk(folderPath, callback, done) {
           files.push(filePath);
           next();
         }
-      })
+      });
     })();
   });
 }
