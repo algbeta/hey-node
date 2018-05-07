@@ -5,6 +5,10 @@ import * as fs from 'fs';
 
 export default function walk(folderPath, callback, done) {
   fs.readdir(folderPath, (err, list = []) => {
+    if (err) {
+      console.log(`[ERROR]: ${err.message}`);
+      return;
+    }
     let i = 0;
     // store files are found through walk to find if any of them were deleted
     let files = [];
