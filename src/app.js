@@ -1,7 +1,17 @@
 import * as config from './config';
-import { User, Product } from './models';
+import Importer from './dirwatch/importer';
+import DirWatcher from './dirwatch/dirwatcher';
 
-console.log(config.name);
+const dirwatcher = new DirWatcher();
 
-const user = new User();
-const product = new Product();
+dirwatcher.on(config.changeEvent, (fileName) => {
+  fileName && Importer.importAsync(fileName, (err, data) => {
+    if (err) {
+      console.log(`[ERROR]: ${err.message}`);
+    } else if (data) {
+      console.log(`[LOG]: ${fileName} content: ${JSON.stringify(data)}`);
+    }
+  });
+});
+
+dirwatcher.init('../../data');

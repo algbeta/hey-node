@@ -27,6 +27,7 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
+    "babel-eslint": "^8.2.3",
     "babel-preset-env": "1.6.1",
     "babel-preset-stage-2": "6.24.1",
     "babel-register": "6.26.0",
@@ -34,5 +35,8 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-plugin-import": "2.11.0",
     "nodemon": "1.17.3"
+  },
+  "dependencies": {
+    "csvjson": "^5.0.0"
   }
 }

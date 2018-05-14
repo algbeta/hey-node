@@ -1,7 +1,9 @@
 {
   "extends": "airbnb-base/legacy",
+  "parser": "babel-eslint",
   "parserOptions": {
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaVersion": 8
   },
   "env": {
     "node": true,
@@ -9,6 +11,9 @@
   },
   "rules": {
     "linebreak-style": "off",
-    "indent": [ "error", 2 ]
+    "indent": [ "error", 2 ],
+    "no-unused-expressions": ["error", { "allowShortCircuit": true }],
+    "wrap-iife": [2, "inside"],
+    "consistent-return": "off"
   }
 }

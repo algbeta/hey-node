@@ -1,3 +1,6 @@
 {
-  "name": "Node.js Homework Application"
+  "name": "Node.js Homework Application",
+  "encoding": "utf8",
+  "delimiter": ",",
+  "changeEvent": "dirwatcher:changed"
 }
