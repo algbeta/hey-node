@@ -3,7 +3,7 @@ import { promisify } from 'util';
 import * as csvjson from 'csvjson';
 import * as config from '../config';
 
-// joined pathes should be provided 
+// joined pathes should be provided
 class Importer {
   // I could have used sync import to promisify and wanted to try async readFile
   static importAsync(pathToFile, callback) {

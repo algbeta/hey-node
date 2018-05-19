@@ -42,19 +42,23 @@ class DirWatcher extends EventEmitter {
 
   getInitialFilesList(done) {
     const folderPath = path.join(__dirname, this.folderPath);
-    walk(folderPath, (file, data) => {
-      this.files[file] = data;
-    }, (err) => {
-      if (err) {
-        console.log(`[ERROR]: ${err.message}`);
-      } else if (done) {
-        done();
+    walk(
+      folderPath,
+      (file, data) => {
+        this.files[file] = data;
+      },
+      err => {
+        if (err) {
+          console.log(`[ERROR]: ${err.message}`);
+        } else if (done) {
+          done();
+        }
       }
-    });
+    );
   }
 
   processFileChanges(file, data) {
-    if (!this.files[file] || (data.mtimeMs > this.files[file].mtimeMs)) {
+    if (!this.files[file] || data.mtimeMs > this.files[file].mtimeMs) {
       console.log(`[LOG]: ${file} has changed`);
       this.files[file] = data;
       this.emit(config.changeEvent, file);
@@ -66,9 +70,13 @@ class DirWatcher extends EventEmitter {
   */
   processFolderChanges() {
     const folderPath = path.join(__dirname, this.folderPath);
-    walk(folderPath, (file, data) => {
-      this.processFileChanges(file, data);
-    }, this.onFolderChangeComplete);
+    walk(
+      folderPath,
+      (file, data) => {
+        this.processFileChanges(file, data);
+      },
+      this.onFolderChangeComplete
+    );
   }
 
   onFolderChangeComplete = (err, files) => {
@@ -83,7 +91,7 @@ class DirWatcher extends EventEmitter {
 
       this.emit(config.changeEvent);
     }
-  }
+  };
 }
 
 export default DirWatcher;
