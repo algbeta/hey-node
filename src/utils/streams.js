@@ -1,5 +1,6 @@
-const commander = require('commander');
 const through = require('through2');
+const commander = require('commander');
+const fs = require('fs');
 /**
  * reverse implementation
  * reads console input
@@ -36,6 +37,7 @@ function write(buffer, encoding, next) {
 }
 function end(done) {
   done();
+  process.exit();
 }
 
 function transform() {
@@ -43,8 +45,15 @@ function transform() {
   process.stdout.write('Please, enter a string: ');
   process.stdin.pipe(stream).pipe(process.stdout);
 }
+/**
+ * outputFile implementation
+ * @param {string} filePath
+ */
+function outputFile(filePath) {
+  const reader = fs.createReadStream(filePath);
+  reader.pipe(process.stdout);
+}
 
-function outputFile(filePath) {}
 function convertFromFile(filePath) {}
 function convertToFile(filePath) {}
 
@@ -57,10 +66,6 @@ commander
   .option('-a, --action', 'run an action')
   .option('-f, --file', 'set path to a file')
   .action((action, file) => {
-    if (!action) {
-      printHelpMessage();
-    }
-
     switch (action) {
       case 'reverse': {
         reverse();
@@ -68,6 +73,10 @@ commander
       }
       case 'transform': {
         transform();
+        break;
+      }
+      case 'outputFile': {
+        outputFile(file);
         break;
       }
       default:
