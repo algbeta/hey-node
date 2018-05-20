@@ -4,7 +4,7 @@
   "description": "sample project done to get into NodeJs",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon src/app.js --exec babel-node",
+    "start": "nodemon src/utils/streams.js --exec babel-node",
     "lint": "eslint ./src",
     "pretest": "npm run lint",
     "test": ""
@@ -37,6 +37,8 @@
     "nodemon": "1.17.3"
   },
   "dependencies": {
-    "csvjson": "^5.0.0"
+    "commander": "^2.15.1",
+    "csvjson": "^5.0.0",
+    "through2": "^2.0.3"
   }
 }
