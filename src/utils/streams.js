@@ -1,6 +1,9 @@
 const through = require('through2');
+const path = require('path');
 const commander = require('commander');
 const fs = require('fs');
+const csvjson = require('csvjson');
+
 /**
  * reverse implementation
  * reads console input
@@ -20,7 +23,7 @@ function reverse() {
         .reverse()
         .join('');
       process.stdout.write(`data: ${finalData}`);
-      process.exit();
+      process.stdin.end();
     }
   });
 }
@@ -28,16 +31,15 @@ function reverse() {
 /**
  *  transform implemenation
  */
-function write(buffer, encoding, next) {
+function write(buffer, enconding) {
   if (buffer) {
-    const data = buffer.toString();
+    const data = buffer.toString(enconding);
     this.push(`data: ${data.toUpperCase()}`);
   }
-  next();
+  process.exit();
 }
 function end(done) {
   done();
-  process.exit();
 }
 
 function transform() {
@@ -47,15 +49,34 @@ function transform() {
 }
 /**
  * outputFile implementation
- * @param {string} filePath
+ * @param {string} file: name of file to be displayed in console
  */
-function outputFile(filePath) {
-  const reader = fs.createReadStream(filePath);
+function outputFile(file) {
+  const reader = fs.createReadStream(file);
   reader.pipe(process.stdout);
 }
-
-function convertFromFile(filePath) {}
-function convertToFile(filePath) {}
+/**
+ * convertFromFile implementation
+ * @param {string} file: name of csv file to be displayed in console
+ */
+function convertFromFile(file) {
+  const reader = fs.createReadStream(path.join(__dirname, file));
+  const toObject = csvjson.stream.toObject();
+  var stringify = csvjson.stream.stringify();
+  reader.pipe(toObject).pipe(stringify).pipe(process.stdout);
+}
+/**
+ * convertToFile
+ * @param {string} file : name of csv file to be saved to json
+ */
+function convertToFile(file) {
+  const reader = fs.createReadStream(path.join(__dirname, file));
+  const jsonName = file.replace('.csv', '');
+  const writer = fs.createWriteStream(path.join(__dirname, `${jsonName}.json`));
+  const toObject = csvjson.stream.toObject();
+  const stringify = csvjson.stream.stringify();
+  reader.pipe(toObject).pipe(stringify).pipe(writer);
+}
 
 function printHelpMessage() {
   console.log('[ERROR] incorrect input');
@@ -77,6 +98,14 @@ commander
       }
       case 'outputFile': {
         outputFile(file);
+        break;
+      }
+      case 'convertFromFile': {
+        convertFromFile(file);
+        break;
+      }
+      case 'convertToFile': {
+        convertToFile(file);
         break;
       }
       default:
