@@ -107,9 +107,22 @@ function convertToFile(file) {
  * @param {*} pathToDir - path to directory to be read
  */
 function cssBuilder(pathToDir) {
+  const css = `.ngmp18 {
+    background-color: #fff;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  .ngmp18__hw3 {
+    color: #333;
+  }
+  .ngmp18__hw3--t7
+    font-weight: bold;
+  }`;
   const finalPathToDir = path.join(__dirname, pathToDir);
   const writer = fs.createWriteStream(
-    path.join(__dirname, pathToDir, `${pathToDir}.css`)
+    path.join(__dirname, pathToDir, 'bundle.css')
   );
   writer.on('error', errorHandler);
   fs.readdir(finalPathToDir, {}, (err, files) => {
@@ -118,9 +131,10 @@ function cssBuilder(pathToDir) {
     files.forEach(file => {
       const reader = fs.createReadStream(path.join(__dirname, pathToDir, file));
       reader.on('error', errorHandler);
-      reader.pipe(writer).on('error', errorHandler);
+      reader.pipe(writer, { end: false }).on('error', errorHandler);
     });
   });
+  //writer.end(css);
 }
 
 commander
