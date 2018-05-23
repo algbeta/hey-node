@@ -3,6 +3,7 @@ const path = require('path');
 const commander = require('commander');
 const fs = require('fs');
 const csvjson = require('csvjson');
+const walker = require('../dirwatch/walker');
 
 // aux functions
 function printHelpMessage() {
@@ -120,21 +121,23 @@ function cssBuilder(pathToDir) {
   .ngmp18__hw3--t7
     font-weight: bold;
   }`;
-  const finalPathToDir = path.join(__dirname, pathToDir);
-  const writer = fs.createWriteStream(
-    path.join(__dirname, pathToDir, 'bundle.css')
-  );
-  writer.on('error', errorHandler);
-  fs.readdir(finalPathToDir, {}, (err, files) => {
-    if (err) errorHandler(err);
 
-    files.forEach(file => {
-      const reader = fs.createReadStream(path.join(__dirname, pathToDir, file));
-      reader.on('error', errorHandler);
-      reader.pipe(writer, { end: false }).on('error', errorHandler);
-    });
+  const finalPathToDir = path.join(__dirname, pathToDir);
+
+  walker.walkAndRead(finalPathToDir, null, (err, data) => {
+    if (err) {
+      errorHandler(err);
+    } else {
+      const cssData = data.concat(css);
+      const writer = fs.createWriteStream(
+        path.join(__dirname, pathToDir, 'bundle.css')
+      );
+
+      writer.on('error', errorHandler);
+      writer.write(cssData);
+      writer.end();
+    }
   });
-  //writer.end(css);
 }
 
 commander
