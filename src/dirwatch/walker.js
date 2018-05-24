@@ -1,9 +1,9 @@
 /* eslint no-plusplus: "off" */
 
-import * as path from 'path';
-import * as fs from 'fs';
+const path = require('path');
+const fs = require('fs');
 
-export default function walk(folderPath, callback, done) {
+function walk(folderPath, callback, done) {
   fs.readdir(folderPath, (err, list = []) => {
     if (err) {
       console.log(`[ERROR]: ${err.message}`);
@@ -36,3 +36,38 @@ export default function walk(folderPath, callback, done) {
     })();
   });
 }
+
+function walkAndRead(folderPath, callback, done) {
+  let finalData = '';
+
+  fs.readdir(folderPath, (err, list = []) => {
+    if (err) {
+      console.log(`[ERROR]: ${err.message}`);
+      return;
+    }
+    let i = 0;
+    // store files are found through walk to find if any of them were deleted
+
+    (function next() {
+      const filename = list[i++];
+      if (!filename) return done(null, finalData);
+
+      const filePath = path.join(folderPath, filename);
+
+      const reader = fs.createReadStream(filePath);
+      reader.on('error', (readerErr) => done(readerErr));
+      reader.on('data', (data) => {
+        finalData = finalData.concat(data);
+      });
+
+      reader.on('end', () => {
+        next();
+      });
+    })();
+  });
+}
+
+module.exports = {
+  walk,
+  walkAndRead
+};
