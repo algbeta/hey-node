@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon src/utils/streams.js --exec babel-node",
-    "start:html-server": "nodemon src/http-servers/echo-server.js",
+    "start:express": "nodemon src/express/index.js --exec babel-node",
     "lint": "eslint ./src",
     "pretest": "npm run lint",
     "test": ""
@@ -41,6 +41,7 @@
     "commander": "^2.15.1",
     "csvjson": "^5.0.0",
     "express": "^4.16.3",
-    "through2": "^2.0.3"
+    "through2": "^2.0.3",
+    "uuid": "^3.2.1"
   }
 }
