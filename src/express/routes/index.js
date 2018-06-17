@@ -1,6 +1,10 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const uuidv1 = require('uuid/v1');
 const router = express.Router();
+const userData = require('../../../data/users.json');
+const config = require('../../config');
+const verifyTokenMiddleware = require('../middlewares/verify-token');
 
 const data = {
   users: [
@@ -46,13 +50,42 @@ const data = {
   ]
 };
 
-router.get('/users', (req, res) => {
+router.post('/auth', (req, res) => {
+  const { login, password } = req.body;
+  const user = userData.users.find(
+    item => item.login === login && item.password === password
+  );
+
+  if (user) {
+    const payload = { userId: user.id };
+    const token = jwt.sign(payload, config.secret, { expiresIn: 1000 });
+
+    res.json({
+      code: 200,
+      message: 'OK',
+      data: {
+        user: {
+          email: user.email,
+          username: user.username
+        }
+      },
+      token
+    });
+  } else {
+    res.status(404).send({
+      code: 404,
+      message: 'Not Found'
+    });
+  }
+});
+
+router.get('/users', verifyTokenMiddleware, (req, res) => {
   res.json({
     users: data.users
   });
 });
 
-router.get('/products', (req, res) => {
+router.get('/products', verifyTokenMiddleware, (req, res) => {
   res.json({
     products: data.products
   });
@@ -69,7 +102,7 @@ router.post('/products', (req, res) => {
   }
 });
 
-router.get('/products/:id', (req, res) => {
+router.get('/products/:id', verifyTokenMiddleware, (req, res) => {
   const product = data.products.find(item => item.id == req.params.id); // eslint-disable-line eqeqeq
   if (!product) {
     res.send({});
@@ -78,7 +111,7 @@ router.get('/products/:id', (req, res) => {
   }
 });
 
-router.get('/products/:id/reviews', (req, res) => {
+router.get('/products/:id/reviews', verifyTokenMiddleware, (req, res) => {
   const reviews = data.reviews.filter(item => item.productId == req.params.id); // eslint-disable-line eqeqeq
   if (!reviews) {
     res.send({});

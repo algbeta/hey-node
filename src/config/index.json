@@ -2,5 +2,6 @@
   "name": "Node.js Homework Application",
   "encoding": "utf8",
   "delimiter": ",",
-  "changeEvent": "dirwatcher:changed"
+  "changeEvent": "dirwatcher:changed",
+  "secret": "supersecret"
 }
