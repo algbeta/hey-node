@@ -1,53 +1,8 @@
 const jwt = require('jsonwebtoken');
 const path = require('path');
-const uuidv1 = require('uuid/v1');
-const userData = require('../../../data/users.json');
 const config = require('../../config');
 const verifyTokenMiddleware = require('../middlewares/verify-token');
-
-const data = {
-  users: [
-    {
-      id: 'natallia',
-      name: 'natallia',
-      status: 'admin'
-    },
-    {
-      id: 'alex',
-      name: 'alex',
-      status: 'reader'
-    }
-  ],
-  reviews: [
-    {
-      id: 1,
-      productId: 1,
-      text: 'very good and cheap'
-    },
-    {
-      id: 2,
-      productId: 2,
-      text: 'was delivered in a bad state'
-    },
-    {
-      id: 3,
-      productId: 1,
-      text: 'suggest to anyone!'
-    }
-  ],
-  products: [
-    {
-      id: 1,
-      name: 'sugar',
-      type: 'white'
-    },
-    {
-      id: 2,
-      name: 'cinammon sugar',
-      type: 'brown'
-    }
-  ]
-};
+const db = require('../models');
 
 module.exports = (router, passport) => {
   router.get('/', (req, res) => {
@@ -56,31 +11,32 @@ module.exports = (router, passport) => {
 
   router.post('/auth', (req, res) => {
     const { login, password } = req.body;
-    const user = userData.users.find(
-      item => item.login === login && item.password === password
-    );
+    db.User.findOne({ where: { login, password } }).then(user => {
+      if (user && user.id) {
+        const payload = { userId: user.id };
+        const token = jwt.sign(payload, config.secret, { expiresIn: 1000 });
 
-    if (user) {
-      const payload = { userId: user.id };
-      const token = jwt.sign(payload, config.secret, { expiresIn: 1000 });
-
-      res.json({
-        code: 200,
-        message: 'OK',
-        data: {
-          user: {
-            email: user.email,
-            username: user.username
-          }
-        },
-        token
-      });
-    } else {
-      res.status(404).send({
-        code: 404,
-        message: 'Not Found'
-      });
-    }
+        res.json({
+          code: 200,
+          message: 'OK',
+          data: {
+            user: {
+              email: user.email,
+              username: user.username
+            }
+          },
+          token
+        });
+      } else {
+        res.status(404).send({
+          code: 404,
+          message: 'Not Found'
+        });
+      }
+    }).catch((err) => {
+      res.sendStatus(500);
+      console.log(err && err.message);
+    });
   });
 
   router.get(
@@ -98,51 +54,65 @@ module.exports = (router, passport) => {
 
   router.get('/auth/twitter', passport.authenticate('twitter'));
 
-  router.get('/auth/twitter/callback', )
-
   router.get('/users', verifyTokenMiddleware, (req, res) => {
-    res.json({
-      users: data.users
+    db.User.findAll().then(users => {
+      res.json({
+        users
+      });
+    }).catch((err) => {
+      res.sendStatus(500);
+      console.log(err && err.message);
     });
   });
 
   router.get('/products', verifyTokenMiddleware, (req, res) => {
-    res.json({
-      products: data.products
+    db.Product.findAll().then(products => {
+      res.json({
+        products
+      });
+    }).catch((err) => {
+      res.sendStatus(500);
+      console.log(err && err.message);
     });
   });
 
   router.post('/products', (req, res) => {
     const product = req.body;
-    if (!product) {
+    if (!product || !product.name) {
       res.sendStatus('400');
     } else {
-      product.id = uuidv1();
-      data.products.push(product);
-      res.json(product);
+      const newProduct = db.Product.build(product);
+      newProduct.save().then(() => {
+        res.json(newProduct);
+      }).catch((err) => {
+        res.sendStatus(500);
+        console.log(err && err.message);
+      });
     }
   });
 
   router.get('/products/:id', verifyTokenMiddleware, (req, res) => {
-    const product = data.products.find(item => item.id == req.params.id); // eslint-disable-line eqeqeq
-    if (!product) {
-      res.send({});
-    } else {
-      res.send(product);
-    }
+    db.Product.findOne({ where: { id: req.params.id } }).then(product => {
+      if (!product) {
+        res.send({});
+      } else {
+        res.send(product);
+      }
+    }).catch((err) => {
+      res.sendStatus(500);
+      console.log(err && err.message);
+    });
   });
 
   router.get('/products/:id/reviews', verifyTokenMiddleware, (req, res) => {
-    const reviews = data.reviews.filter(
-      item => item.productId == req.params.id
-    ); // eslint-disable-line eqeqeq
-    if (!reviews) {
-      res.send({});
-    } else {
-      res.send({
+    db.Review.findAll({ where: { productId: req.params.id } }).then(reviews => {
+      res.json({
         reviews
       });
-    }
+    }).catch((err) => {
+      res.sendStatus(500);
+      console.log(err && err.message);
+    });
   });
 
   router.get('*', (req, res) => {
