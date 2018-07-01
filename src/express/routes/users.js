@@ -65,4 +65,13 @@ module.exports = (router, passport) => {
       console.log(err && err.message);
     });
   });
+
+  router.delete('/users/:id', verifyTokenMiddleware, (req, res) => {
+    UserModel.findByIdAndRemove(req.params.id).then(() => {
+      res.sendStatus(200);
+    }).catch((err) => {
+      console.log(err.message);
+      res.sendStatus(500);
+    });
+  });
 };

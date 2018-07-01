@@ -40,4 +40,13 @@ module.exports = (router) => {
       console.log(err && err.message);
     });
   });
+
+  router.delete('/products/:id', verifyTokenMiddleware, (req, res) => {
+    ProductModel.findByIdAndRemove(req.params.id).then(() => {
+      res.sendStatus(200);
+    }).catch((err) => {
+      console.log(err.message);
+      res.sendStatus(500);
+    });
+  });
 };

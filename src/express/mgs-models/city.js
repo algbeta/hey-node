@@ -22,5 +22,10 @@ const CitySchema = new Schema({
   }
 });
 
+CitySchema.pre('save', function(next) {
+  this.lastModifiedDate = Date.now();
+  next();
+});
+
 const CityModel = mongoose.model('City', CitySchema);
 module.exports = CityModel;
