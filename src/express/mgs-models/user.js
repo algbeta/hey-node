@@ -15,8 +15,15 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: [true, 'Password is required!']
-  }
+  },
+  lastModifiedDate: Date
 });
+
+UserSchema.pre('save', function(next) {
+  this.lastModifiedDate = Date.now();
+  next();
+});
+
 
 const UserModel = mongoose.model('User', UserSchema);
 module.exports = UserModel;
