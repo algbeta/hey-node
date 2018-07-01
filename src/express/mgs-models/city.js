@@ -5,6 +5,7 @@ const CitySchema = new Schema({
   name: {
     type: String,
     required: [true, 'City Name is required!'],
+    trim: true,
     validate: {
       validator: (v) => {
         const firstLetter = v[0];
@@ -13,8 +14,8 @@ const CitySchema = new Schema({
       message: 'City Name must start with a capital letter!'
     }
   },
-  country: { type: String, required: [true, 'Country is required!'] },
-  capital: { type: Boolean, default: false },
+  country: { type: String, trim: true, required: [true, 'Country is required!'] },
+  capital: { type: Boolean, trim: true, default: false },
   location: {
     lat: Number,
     long: Number
