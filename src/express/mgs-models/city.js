@@ -16,6 +16,7 @@ const CitySchema = new Schema({
   },
   country: { type: String, trim: true, required: [true, 'Country is required!'] },
   capital: { type: Boolean, trim: true, default: false },
+  lastModifiedDate: Date,
   location: {
     lat: Number,
     long: Number

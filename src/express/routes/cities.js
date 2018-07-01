@@ -62,7 +62,8 @@ module.exports = (router) => {
       $setOnInsert: {
         name: city.name,
         capital: city.capital,
-        country: city.country
+        country: city.country,
+        lastModifiedDate: Date.now()
       }
     }, {
       upsert: true,
