@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
   name: {
-    name: String,
+    type: String,
     required: [true, 'Product name is required!'],
     trim: true
   },

@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
   name: {
-    name: String,
+    type: String,
     required: [true, 'User name is required!'],
     trim: true
   },
   login: {
-    name: String,
+    type: String,
     required: [true, 'Login is required!'],
     trim: true
   },
