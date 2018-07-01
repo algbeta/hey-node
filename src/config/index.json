@@ -3,5 +3,7 @@
   "encoding": "utf8",
   "delimiter": ",",
   "changeEvent": "dirwatcher:changed",
-  "secret": "supersecret"
+  "secret": "supersecret",
+  "mongodbName": "task7",
+  "mongodbUrl": "mongodb://localhost:27017"
 }
