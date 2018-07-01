@@ -1,21 +1,8 @@
 const mongoose = require('mongoose');
+const CityModel = require('../models/City'); 
 const url = 'mongodb://localhost:27017';
 const dbName = 'task7';
 mongoose.connect(`${url}/${dbName}`);
-
-const Schema = mongoose.Schema;
-
-const CitySchema = new Schema({
-  name: String,
-  country: String,
-  capital: Boolean,
-  location: {
-    lat: Number,
-    long: Number
-  }
-});
-
-const CityModel = mongoose.model('City', CitySchema);
 
 const getRandomCity = (callback) => {
   CityModel.find({}, (err, allCitiesArray) => {
