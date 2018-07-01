@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const CityModel = require('../express/mgs-models/city');
-const url = 'mongodb://localhost:27017';
-const dbName = 'task7';
-mongoose.connect(`${url}/${dbName}`);
+const config = require('../config');
+mongoose.connect(`${config.mongodbUrl}/${config.mongodbName}`);
 
 const getRandomCity = (callback) => {
   CityModel.find({}, (err, allCitiesArray) => {
