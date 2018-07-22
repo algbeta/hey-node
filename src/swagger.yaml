@@ -1,0 +1,432 @@
+---
+swagger: "2.0"
+info:
+  description: api used in hey-node app
+  version: 1.0.0
+  title: Hey-node API
+  contact:
+    email: gorbunovano@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /hey-node/node/1.0.0
+tags:
+- name: cities
+  description: All cities endpoints
+- name: products
+  description: All products endpoints
+- name: users
+  description: All users endpoints
+schemes:
+- https
+paths:
+  /users:
+    get:
+      tags:
+      - users
+      description: get list of users
+      parameters: []
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+          responseSchema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+        500:
+          description: Server error
+      security:
+      - jwt: []
+  /users/{userId}:
+    delete:
+      tags:
+      - users
+      description: delete user by id
+      parameters:
+      - name: userId
+        in: path
+        description: Id of user to delete
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+  /auth:
+    post:
+      tags:
+      - users
+      description: auth endpoint
+      parameters:
+      - in: body
+        name: credentials
+        description: credentials to login
+        required: false
+        schema:
+          $ref: '#/definitions/credentials'
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/inline_response_200'
+          responseSchema:
+            type: object
+            properties:
+              user:
+                $ref: '#/definitions/User'
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjM5MmY2ODM3YTUwZDViYTQyNzEwNGYiLCJpYXQiOjE1MzIyNjM5NjksImV4cCI6MTUzMjI2NDk2OX0.Mw0A7JJW2dUCbx__9YjpTZWD40EWI_XXPlamxvmKuyY
+        404:
+          description: User is not found
+        500:
+          description: Server error
+      security: []
+  /products:
+    get:
+      tags:
+      - products
+      description: List of all available products
+      parameters: []
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+          responseSchema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+    post:
+      tags:
+      - products
+      description: Create new product
+      parameters:
+      - in: body
+        name: product
+        description: product to add
+        required: false
+        schema:
+          $ref: '#/definitions/Product'
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Invalid request
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+  /products/{productId}:
+    get:
+      tags:
+      - products
+      description: get product info by id
+      parameters:
+      - name: productId
+        in: path
+        description: Id of product to return
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Product'
+          responseSchema:
+            $ref: '#/definitions/Product'
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+    delete:
+      tags:
+      - products
+      description: delete product by id
+      parameters:
+      - name: productId
+        in: path
+        description: Id of product to delete
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+  /cities:
+    get:
+      tags:
+      - cities
+      description: List of all available cities
+      parameters: []
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+          responseSchema:
+            type: array
+            items:
+              $ref: '#/definitions/City'
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+    post:
+      tags:
+      - cities
+      description: Adds new city
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: city
+        description: city to add
+        required: false
+        schema:
+          $ref: '#/definitions/City'
+      responses:
+        200:
+          description: Successful response
+        400:
+          description: Invalid request
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+  /cities/{cityId}:
+    get:
+      tags:
+      - cities
+      description: get city info by id
+      parameters:
+      - name: cityId
+        in: path
+        description: Id of city to return
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/City'
+          responseSchema:
+            $ref: '#/definitions/City'
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+    put:
+      tags:
+      - cities
+      description: modify city data by id
+      parameters:
+      - name: cityId
+        in: path
+        description: Id of city to modify
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/City'
+          responseSchema:
+            $ref: '#/definitions/City'
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+    delete:
+      tags:
+      - cities
+      description: delete city by id
+      parameters:
+      - name: cityId
+        in: path
+        description: Id of city to delete
+        required: true
+        type: string
+        format: uuid
+      responses:
+        200:
+          description: Successful response
+        401:
+          description: Not authorized
+        500:
+          description: Server error
+      security:
+      - jwt: []
+securityDefinitions:
+  jwt:
+    description: Secures endpoint by requiring a valid JWT token
+    type: apiKey
+    name: Authentication
+    in: header
+definitions:
+  User:
+    type: object
+    required:
+    - id
+    - login
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Alex
+      login:
+        type: string
+        example: alex
+      lastModifiedDate:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+    example:
+      lastModifiedDate: 2016-08-29T09:12:33.001Z
+      name: Alex
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
+      login: alex
+  Product:
+    type: object
+    required:
+    - id
+    - name
+    - type
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: sugar
+      type:
+        type: string
+        example: brown
+      lastModifiedDate:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+    example:
+      lastModifiedDate: 2016-08-29T09:12:33.001Z
+      name: sugar
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
+      type: brown
+  City:
+    type: object
+    required:
+    - country
+    - id
+    - name
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: d290f1ee-6c54-4b01-90e6-d701748f0851
+      name:
+        type: string
+        example: Minsk
+      country:
+        type: string
+        example: Belarus
+      capital:
+        type: boolean
+        example: true
+        default: false
+      lastModifiedDate:
+        type: string
+        example: 2016-08-29T09:12:33.001Z
+      location:
+        $ref: '#/definitions/City_location'
+    example:
+      country: Belarus
+      capital: true
+      lastModifiedDate: 2016-08-29T09:12:33.001Z
+      name: Minsk
+      location:
+        lat: 53.9
+        long: 27.56667
+      id: d290f1ee-6c54-4b01-90e6-d701748f0851
+  credentials:
+    type: object
+    required:
+    - login
+    - password
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+  inline_response_200:
+    properties:
+      user:
+        $ref: '#/definitions/User'
+      token:
+        type: string
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjM5MmY2ODM3YTUwZDViYTQyNzEwNGYiLCJpYXQiOjE1MzIyNjM5NjksImV4cCI6MTUzMjI2NDk2OX0.Mw0A7JJW2dUCbx__9YjpTZWD40EWI_XXPlamxvmKuyY
+    example:
+      user:
+        lastModifiedDate: 2016-08-29T09:12:33.001Z
+        name: Alex
+        id: d290f1ee-6c54-4b01-90e6-d701748f0851
+        login: alex
+      token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YjM5MmY2ODM3YTUwZDViYTQyNzEwNGYiLCJpYXQiOjE1MzIyNjM5NjksImV4cCI6MTUzMjI2NDk2OX0.Mw0A7JJW2dUCbx__9YjpTZWD40EWI_XXPlamxvmKuyY
+  City_location:
+    properties:
+      lat:
+        type: number
+        example: 53.9
+        description: latitude of the city
+      long:
+        type: number
+        example: 27.56667
+        description: longtitude of the city
+    example:
+      lat: 53.9
+      long: 27.56667

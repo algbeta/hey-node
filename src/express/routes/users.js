@@ -12,13 +12,9 @@ module.exports = (router, passport) => {
         const token = jwt.sign(payload, config.secret, { expiresIn: 1000 });
 
         res.json({
-          code: 200,
-          message: 'OK',
-          data: {
-            user: {
-              email: user.name,
-              username: user.login
-            }
+          user: {
+            name: user.name,
+            login: user.login
           },
           token
         });
